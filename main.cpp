@@ -1,4 +1,3 @@
-
 #include "match.h"
 #include <QDebug>
 #include <iostream>
