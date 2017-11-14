@@ -1,10 +1,6 @@
-#include "mainwindow.h"
-#include <QApplication>
+
 #include "match.h"
 #include <QDebug>
-#include "opencv2/imgcodecs.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
 #include <iostream>
 
 
