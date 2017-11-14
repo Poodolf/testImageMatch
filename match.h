@@ -22,13 +22,14 @@ class Match{
         double dMatch;
 };
 
-QVector<Match> matching(Mat img, Mat templ)
+QVector<Match> matching(Mat img, Mat templ, int matchToFind)
 {
     namedWindow( image_window, CV_WINDOW_AUTOSIZE );
     namedWindow( result_window, CV_WINDOW_AUTOSIZE );
 
     Mat result;
     Mat img_display;
+    QVector<Match> hits;
     img.copyTo( img_display );
 
     int result_cols =  img.cols - templ.cols + 1;
@@ -44,25 +45,34 @@ QVector<Match> matching(Mat img, Mat templ)
         matchLoc = maxLoc;
         matchingGrade = maxVal;
 
-        if(matchingGrade > 0.8){
+        if((maxVal > 0.80) && !(counter == matchToFind)){
             ++counter;
             Match newMatch;
             QRect temp = {matchLoc.x, matchLoc.y, templ.cols, templ.rows};
             newMatch.rect = temp;
             newMatch.dMatch = maxVal;
+            hits.append(newMatch);
 
             qDebug() << "Matching Number:" << counter << "," << matchingGrade << "\n" << newMatch.rect.left() << newMatch.rect.top() << newMatch.dMatch;
             floodFill(result, Point(matchLoc.x,matchLoc.y), Scalar(0,0,0), 0, Scalar(10,10,10));
             rectangle( img_display, matchLoc, Point( matchLoc.x + templ.cols , matchLoc.y + templ.rows ), Scalar::all(0), 2, 8, 0 );
             imshow( image_window, img_display );
             imshow( result_window, result );
-            //waitKey(0);
+            waitKey(0);
         }
         else
+        {
+            if (counter == matchToFind){
+                qDebug() << counter << "matches found, exit searching";
+                break;
+            }
+            else {
             qDebug() << "no more matches";
             break;
+            }
+        }
     }
-    //return;
+    return hits;
 }
 
 
