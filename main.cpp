@@ -40,8 +40,7 @@ QVector<Match> matching(cv::Mat img, cv::Mat templ, int matchToFind)
         if((maxVal > 0.80) && !(counter == matchToFind)){
             ++counter;
             Match newMatch;
-            QRect temp = {matchLoc.x, matchLoc.y, templ.cols, templ.rows};
-            newMatch.rect = temp;
+            newMatch.rect = {matchLoc.x, matchLoc.y, templ.cols, templ.rows};
             newMatch.dMatch = maxVal;
             hits.append(newMatch);
 
