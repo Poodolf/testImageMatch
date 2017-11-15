@@ -29,7 +29,7 @@ QVector<Match> matching(cv::Mat img, cv::Mat templ, int matchToFind)
     result.create( result_rows, result_cols, CV_32FC1 );
     matchTemplate( img, templ, result, 5);
     double matchingGrade;
-    int counter = 0; //Anzahl der gesuchten Treffer
+    int counter = 0;
     while (true){
 
         double minVal; double maxVal; cv::Point minLoc; cv::Point maxLoc; cv::Point matchLoc;
@@ -69,9 +69,9 @@ QVector<Match> matching(cv::Mat img, cv::Mat templ, int matchToFind)
 
 int main(int, char**)
 {
-    cv::Mat img = cv::imread("X://2.jpg", 1);
-    cv::Mat templ = cv::imread("X://2template.jpg", 1);
-    int matchToFind = 10;
+    cv::Mat img = cv::imread("X://2.jpg", 1); //Source image
+    cv::Mat templ = cv::imread("X://2template.jpg", 1); //Reference
+    int matchToFind = 100; //Anzahl der gesuchten Treffer
     QVector<Match> hits = matching(img, templ, matchToFind);
     for(int i = 0; i <= (hits.length() - 1); ++i){
     qDebug() << "hit " << (i + 1) << hits[i].rect.left() << hits[i].rect.top() <<hits[i].dMatch;
