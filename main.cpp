@@ -26,26 +26,24 @@ QVector<Match> doMatching(cv::Mat img, cv::Mat templ, int max_matches)
     int result_rows = img.rows - templ.rows + 1;
     result.create( result_rows, result_cols, CV_32FC1 );
     matchTemplate( img, templ, result, 5);
-    double matchingGrade;
     while (true){
 
-        double minVal; double maxVal; cv::Point minLoc; cv::Point maxLoc; cv::Point matchLoc;
-        minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, cv::Mat() );
-        matchLoc = maxLoc;
-        matchingGrade = maxVal;
+        double min_val; double max_val; cv::Point min_loc; cv::Point max_loc; cv::Point match_loc;
+        minMaxLoc( result, &min_val, &max_val, &min_loc, &max_loc, cv::Mat() );
+        match_loc = max_loc;
 
-        if((maxVal > 0.80) && (hits.size() != max_matches)){  //when the match has a value higher than 0.XX and matches to find hasnt been reached
-            Match NewMatch;
-            NewMatch.setLeft(matchLoc.x);
-            NewMatch.setTop(matchLoc.y);
-            NewMatch.setWidth(templ.cols);
-            NewMatch.setHeight(templ.rows);
-            NewMatch.matching_score = maxVal;
-            hits.append(NewMatch);
+        if((max_val > 0.80) && (hits.size() != max_matches)){  //when the match has a value higher than 0.XX and matches to find hasnt been reached
+            Match new_match;
+            new_match.setLeft(match_loc.x);
+            new_match.setTop(match_loc.y);
+            new_match.setWidth(templ.cols);
+            new_match.setHeight(templ.rows);
+            new_match.matching_score = max_val;
+            hits.append(new_match);
 
-            qDebug() << "Matching Number:" << hits.size() << "," << matchingGrade << "\n" << NewMatch.left() << NewMatch.top() << NewMatch.matching_score;
-            floodFill(result, cv::Point(matchLoc.x,matchLoc.y), cv::Scalar(0,0,0), 0, cv::Scalar(10,10,10));
-            rectangle( img_display, matchLoc, cv::Point( matchLoc.x + templ.cols , matchLoc.y + templ.rows ), cv::Scalar::all(0), 2, 8, 0 );
+            qDebug() << "Matching Number:" << hits.size() << new_match.left() << new_match.top() << new_match.matching_score;
+            floodFill(result, cv::Point(match_loc.x,match_loc.y), cv::Scalar(0,0,0), 0, cv::Scalar(10,10,10));
+            rectangle( img_display, match_loc, cv::Point( match_loc.x + templ.cols , match_loc.y + templ.rows ), cv::Scalar::all(0), 2, 8, 0 );
             imshow( image_window, img_display );
             imshow( result_window, result );
             cv::waitKey(0); //Check Match by Match by pressing a button
@@ -66,12 +64,12 @@ QVector<Match> doMatching(cv::Mat img, cv::Mat templ, int max_matches)
 
 int main(int, char**)
 {
-    cv::Mat img = cv::imread("X://2.jpg", 1); //Source image
-    cv::Mat templ = cv::imread("X://2template.jpg", 1); //Reference
+    cv::Mat img = cv::imread("X://2.jpg", 1);
+    cv::Mat templ = cv::imread("X://2template.jpg", 1);
     int max_matches = 10; //Anzahl der gesuchten Treffer
     QVector<Match> hits = doMatching(img, templ, max_matches);
     for(int i = 0; i <= (hits.length() - 1); ++i){
-    qDebug() << "hit" << (i + 1) << hits[i].left() << hits[i].top() <<hits[i].matching_score;
+    qDebug() << "hit" << (i + 1) << hits[i].left() << hits[i].top() << hits[i].matching_score;
     }
     return 0;
 }
